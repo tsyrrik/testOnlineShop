@@ -1,0 +1,2 @@
+CREATE ROLE user_db WITH LOGIN PASSWORD '123';
+CREATE DATABASE product_catalog OWNER user_db;

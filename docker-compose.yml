@@ -28,8 +28,10 @@ services:
             POSTGRES_DB: product_catalog
             POSTGRES_USER: user_db
             POSTGRES_PASSWORD: 123
+        volumes:
+            - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
         ports:
-            - "5432:5432"
+            - "54323:5432"
         networks:
             - app-network
 
