@@ -37,12 +37,4 @@ Route::get('register', [UserController::class, 'registration'])->name('register'
 Route::post('custom-registration', [UserController::class, 'customRegistration'])->name('register.custom');
 Route::get('signout', [UserController::class, 'signOut'])->name('signout');
 
-// Роут для отображения главной страницы
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
 
-// Добавляем маршрут для домашней страницы
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
