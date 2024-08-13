@@ -30,6 +30,19 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Товар добавлен в корзину!');
     }
+    public function removeFromCart($productId)
+    {
+        $user = Auth::user();
+        $cart = Cart::where('user_id', $user->id)->where('product_id', $productId)->first();
+
+        if ($cart) {
+            $cart->delete();
+            return redirect()->back()->with('success', 'Товар удален из корзины!');
+        }
+
+        return redirect()->back()->with('error', 'Товар не найден в корзине!');
+    }
+
 
     public function viewCart()
     {
