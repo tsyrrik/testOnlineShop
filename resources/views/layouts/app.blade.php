@@ -52,6 +52,10 @@
     <a href="{{ route('products.index') }}">Продукты</a>
     <a href="{{ route('products.create') }}">Добавить продукт</a>
     <a href="{{ route('cart.view') }}">Корзина</a>
+    <a href="{{ route('order.view') }}">Заказы</a>
+    <a href="{{ route('signout') }}">Logout</a>
+
+
 </nav>
 
 <div class="container">
