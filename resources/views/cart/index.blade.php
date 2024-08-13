@@ -36,7 +36,6 @@
                         <td>
                             <form action="{{ route('cart.remove', $item->product_id) }}" method="POST" style="display:inline;">
                                 @csrf
-                                @method('POST')
                                 <button type="submit" class="btn btn-danger">Удалить</button>
                             </form>
                         </td>
