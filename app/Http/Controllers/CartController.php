@@ -2,52 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
+use App\Models\UserProduct;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Requests\AddToCartRequest;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request, $productId)
+    public function addToCart(AddToCartRequest $request, $productId)
     {
         $user = Auth::user();
         $quantity = $request->input('quantity', 1);
 
-        $cart = Cart::where('user_id', $user->id)->where('product_id', $productId)->first();
+        $userProduct = UserProduct::where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->first();
 
-        if ($cart) {
-            // If the cart item exists, increment the quantity
-            $cart->increment('quantity', $quantity);
+        if ($userProduct) {
+            // Если товар уже в корзине, увеличиваем количество
+            $userProduct->quantity += $quantity;
+            $userProduct->save();
         } else {
-            // If no cart item exists, create a new one with the given quantity
-            $cart = Cart::create([
+            // Если товара нет в корзине, создаем новую запись
+            UserProduct::create([
                 'user_id' => $user->id,
                 'product_id' => $productId,
-                'quantity' => $quantity
+                'quantity' => $quantity,
             ]);
         }
 
         return redirect()->back()->with('success', 'Товар добавлен в корзину!');
     }
+
     public function removeFromCart($productId)
     {
         $user = Auth::user();
-        $cart = Cart::where('user_id', $user->id)->where('product_id', $productId)->first();
+        $userProduct = UserProduct::where('user_id', $user->id)->where('product_id', $productId)->first();
 
-        if ($cart) {
-            $cart->delete();
+        if ($userProduct) {
+            $userProduct->delete();
             return redirect()->back()->with('success', 'Товар удален из корзины!');
         }
 
         return redirect()->back()->with('error', 'Товар не найден в корзине!');
     }
 
-
     public function viewCart()
     {
         $user = Auth::user();
-        $cartItems = Cart::where('user_id', $user->id)->get();
+        $cartItems = UserProduct::where('user_id', $user->id)->get();
 
         return view('cart.index', compact('cartItems'));
     }

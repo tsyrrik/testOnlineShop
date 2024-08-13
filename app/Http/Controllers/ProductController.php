@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -34,20 +35,13 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
+     * @param  StoreProductRequest  $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreProductRequest $request): RedirectResponse
     {
-        // Валидируем данные запроса
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            // Добавьте здесь другие поля и их правила валидации
-        ]);
-
         // Создаем продукт с валидированными данными
-        Product::create($validatedData);
+        Product::create($request->validated());
 
         // Перенаправляем на страницу со списком продуктов
         return redirect()->route('products.index');
@@ -67,21 +61,14 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  Request  $request
+     * @param  UpdateProductRequest  $request
      * @param  Product  $product
      * @return RedirectResponse
      */
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(UpdateProductRequest $request, Product $product): RedirectResponse
     {
-        // Валидируем данные запроса
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            // Добавьте здесь другие поля и их правила валидации
-        ]);
-
         // Обновляем продукт с валидированными данными
-        $product->update($validatedData);
+        $product->update($request->validated());
 
         // Перенаправляем на страницу со списком продуктов
         return redirect()->route('products.index');

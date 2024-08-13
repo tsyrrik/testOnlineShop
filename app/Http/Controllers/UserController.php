@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Hash;
-use Session;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -15,20 +16,15 @@ class UserController extends Controller
         return view('auth.login');
     }
 
-    public function customLogin(Request $request)
+    public function login(LoginRequest $request)  // изменено имя метода
     {
-        $request->validate([
-            'email' => 'required',
-            'password' => 'required',
-        ]);
-
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->intended('dashboard')
                 ->withSuccess('Signed in');
         }
 
-        return redirect("login")->withSuccess('Login details are not valid');
+        return redirect("login")->withError('Login details are not valid');
     }
 
     public function registration()
@@ -36,16 +32,10 @@ class UserController extends Controller
         return view('auth.register');
     }
 
-    public function customRegistration(Request $request)
+    public function register(RegistrationRequest $request)  // изменено имя метода
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
-
-        $data = $request->all();
-        $check = $this->create($data);
+        $data = $request->validated();
+        $this->create($data);
 
         return redirect("dashboard")->withSuccess('You have signed-in');
     }
@@ -65,13 +55,14 @@ class UserController extends Controller
             return view('auth.dashboard');
         }
 
-        return redirect("login")->withSuccess('You are not allowed to access');
+        return redirect("login")->withError('You are not allowed to access');
     }
 
     public function signOut()
     {
         Session::flush();
         Auth::logout();
+
         return redirect('login');
     }
 }
