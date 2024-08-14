@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Models\User;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +21,7 @@ class UserController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
+            return redirect()->intended('products')
                 ->withSuccess('Signed in');
         }
 
@@ -37,7 +38,7 @@ class UserController extends Controller
         $data = $request->validated();
         $this->create($data);
 
-        return redirect("dashboard")->withSuccess('You have signed-in');
+        return redirect("login")->withSuccess('You have signed-in');
     }
 
     public function create(array $data)
@@ -47,15 +48,6 @@ class UserController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-    }
-
-    public function dashboard()
-    {
-        if (Auth::check()) {
-            return view('auth.dashboard');
-        }
-
-        return redirect("login")->withError('You are not allowed to access');
     }
 
     public function signOut()

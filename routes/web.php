@@ -29,7 +29,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 // Роуты для аутентификации
-Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
 Route::get('/login', [UserController::class, 'index'])->name('login');
 Route::post('/login', [UserController::class, 'login'])->name('login');  // изменено имя метода
 Route::get('/register', [UserController::class, 'registration'])->name('register');

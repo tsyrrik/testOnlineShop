@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -17,7 +18,7 @@ class ProductController extends Controller
      */
     public function index(): View
     {
-        $products = Product::all();
+        $products = Product::paginate(10);
 
         return view('products.index', compact('products'));
     }

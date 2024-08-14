@@ -3,33 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserProduct;
-use App\Models\Product;
 use App\Http\Requests\AddToCartRequest;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function addToCart(AddToCartRequest $request, $productId)
+    public function addToCart(AddToCartRequest $request, int $productId)
     {
         $user = Auth::user();
         $quantity = $request->input('quantity', 1);
 
-        $userProduct = UserProduct::where('user_id', $user->id)
-            ->where('product_id', $productId)
-            ->first();
-
-        if ($userProduct) {
-            // Если товар уже в корзине, увеличиваем количество
-            $userProduct->quantity += $quantity;
-            $userProduct->save();
-        } else {
-            // Если товара нет в корзине, создаем новую запись
-            UserProduct::create([
-                'user_id' => $user->id,
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ]);
-        }
+        UserProduct::createOrUpdateQuantity( $user->id, $productId, $quantity);
 
         return redirect()->back()->with('success', 'Товар добавлен в корзину!');
     }
@@ -50,7 +35,7 @@ class CartController extends Controller
     public function viewCart()
     {
         $user = Auth::user();
-        $cartItems = UserProduct::where('user_id', $user->id)->get();
+        $cartItems = $user->userProducts;
 
         return view('cart.index', compact('cartItems'));
     }

@@ -34,6 +34,8 @@
         </tbody>
     </table>
 
+    {{ $products->links() }}
+
     <script>
         // JavaScript для увеличения/уменьшения количества
         document.querySelectorAll('.quantity-modify').forEach(button => {

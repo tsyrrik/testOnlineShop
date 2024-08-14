@@ -20,4 +20,23 @@ class UserProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
+    public static function createOrUpdateQuantity(int $userId, int $productId, int $quantity)
+    {
+        $userProduct = UserProduct::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($userProduct) {
+            // Если товар уже в корзине, увеличиваем количество
+            $userProduct->quantity += $quantity;
+            $userProduct->save();
+        } else {
+            // Если товара нет в корзине, создаем новую запись
+            parent::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'quantity' => $quantity,
+            ]);
+        }
+    }
 }
